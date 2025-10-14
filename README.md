@@ -35,15 +35,15 @@ $ nvidia-smi
 ### 6. Run the Training Script
 Start the training process by running one of the following commands.
 
-On CPU without augmentation: 
+- on CPU without augmentation: 
 
 $ python cifar10_resnet18_runner.py --n_trials 2 --study_name "cifar10_resnet" --augment False
 
-On GPU and with augmentation
+- on GPU and with augmentation
 
 $ python cifar10_resnet18_runner.py --gpu 1 --n_trials 2 --study_name "cifar10_resnet_augment" --augment True
 
-In parallel on 8 GPUs
+- in parallel on 8 GPUs
 
 $ parallel --ungroup python cifar10_resnet18_runner.py --gpu {} --n_trials 2 --study_name "cifar10_resnet" ::: {0..7}
 
