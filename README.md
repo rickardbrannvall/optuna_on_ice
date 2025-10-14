@@ -4,14 +4,20 @@ This guide explains how to use this repository on a cluster environment using a 
 
 ### 1. Launch a JupyterLab Pod
 
-Start by creating a JupyterLab pod using your cluster’s standard template for apps. You can use the default settings, but make sure to:
+Start by creating a JupyterLab pod using the ICE standard template charts for the jupyternode apps. You can use the default settings, but check
 
-- Select the latest TensorFlow image from Docker Hub (e.g., `tensorflow/tensorflow:latest-jupyter`)
-- Optionally mount a persistent volume if you want to store results or work across sessions
+- Select the latest TensorFlow image from Docker Hub (e.g., `tensorflow/tensorflow:latest-gpu`)
+- Choose a subdomain for icedc.se, e.g., `myjupyterpod-mynamespace.icedc.se`
+- Attach one or more GPU if available
+- Optionally mount a shared persistent storage volume if you want to store results or work across sessions
+
+Shared persistent storage must be set-up separately before you create your JupyterLab pod.
 
 ### 2. Access JupyterLab
 
-Once the pod is running, open JupyterLab in your browser. Navigate to your preferred working directory—ideally one located on the persistent volume if mounted.
+Once the pod is running, open JupyterLab in your browser through the choosen subdomain on icedc.se. 
+
+Navigate to your preferred working directory — ideally one located on the shared persistent volume if mounted.
 
 ### 3. Clone the Repository
 
