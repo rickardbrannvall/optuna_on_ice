@@ -7,7 +7,7 @@ This guide explains how to use this repository on a cluster environment using a 
 Start by creating a JupyterLab pod using the ICE standard template charts for the jupyternode apps. You can use the default settings, but check
 
 - Select the latest TensorFlow image from Docker Hub (e.g., `tensorflow/tensorflow:latest-gpu`)
-- Choose a subdomain for icedc.se, e.g., `myjupyterpod-mynamespace.icedc.se`
+- Choose a unique subdomain for icedc.se, e.g., `[myjupyterpod]-[mynamespace].icedc.se`
 - Attach one or more GPU if available
 - Optionally mount a shared persistent storage volume if you want to store results or work across sessions
 
@@ -41,15 +41,15 @@ $ nvidia-smi
 ### 6. Run the Training Script
 Start the training process by running one of the following commands.
 
-- on CPU without augmentation: 
+On CPU without augmentation: 
 
 $ python cifar10_resnet18_runner.py --n_trials 2 --study_name "cifar10_resnet" --augment False
 
-- on GPU and with augmentation
+On GPU and with augmentation
 
 $ python cifar10_resnet18_runner.py --gpu 1 --n_trials 2 --study_name "cifar10_resnet_augment" --augment True
 
-- in parallel on 8 GPUs
+In parallel on 8 GPUs
 
 $ parallel --ungroup python cifar10_resnet18_runner.py --gpu {} --n_trials 2 --study_name "cifar10_resnet" ::: {0..7}
 
