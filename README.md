@@ -17,29 +17,37 @@ Once the pod is running, open JupyterLab in your browser. Navigate to your prefe
 
 Open a terminal in JupyterLab and run the following commands:
 
-git clone https://github.com/rickardbrannvall/optuna_on_ice.git
+$ git clone https://github.com/rickardbrannvall/optuna_on_ice.git
 
-cd optuna_on_ice
+$ cd optuna_on_ice
 
 ### 4. Install Dependencies
 
 Run the installation script to install all required libraries:
 
-bash install.sh
+$ bash install.sh
 
 ### 5. Check GPU Availability
 To verify how many GPUs are available to your pod, run:
 
-nvidia-smi
+$ nvidia-smi
 
 ### 6. Run the Training Script
-Start the training process by executing:
+Start the training process by running one of the following commands.
 
-python train.py
+On CPU without augmentation: 
+
+$ python cifar10_resnet18_runner.py --n_trials 2 --study_name "cifar10_resnet" --augment False
+
+On GPU and with augmentation
+
+$ python cifar10_resnet18_runner.py --gpu 1 --n_trials 2 --study_name "cifar10_resnet_augment" --augment True
+
+In parallel on 8 GPUs
+
+$ parallel --ungroup python cifar10_resnet18_runner.py --gpu {} --n_trials 2 --study_name "cifar10_resnet" ::: {0..7}
 
 ### 7. Monitor Training Progress
 Once training has started, you can monitor progress by opening the provided Jupyter notebook in the repository. It will visualize training metrics and optimization history.
 
 - Notebook: study_visualization.ipynb
-
-
