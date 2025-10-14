@@ -18,11 +18,13 @@ Once the pod is running, open JupyterLab in your browser. Navigate to your prefe
 Open a terminal in JupyterLab and run the following commands:
 
 git clone https://github.com/rickardbrannvall/optuna_on_ice.git
+
 cd optuna_on_ice
 
 ### 4. Install Dependencies
 
 Run the installation script to install all required libraries:
+
 bash install.sh
 
 ### 5. Check GPU Availability
