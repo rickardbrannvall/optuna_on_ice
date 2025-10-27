@@ -1,4 +1,5 @@
-## Running on the Cluster with JupyterLab
+
+ M_## Running on the Cluster with JupyterLab
 
 This guide explains how to use this repository on a cluster environment using a JupyterLab pod.
 
@@ -54,6 +55,6 @@ $ python cifar10_resnet18_runner.py --gpu 1 --n_trials 2 --study_name "cifar10_r
 $ parallel --ungroup python cifar10_resnet18_runner.py --gpu {} --n_trials 2 --study_name "cifar10_resnet" ::: {0..7}
 
 ### 7. Monitor Training Progress
-Once training has started, you can monitor progress by opening the provided Jupyter notebook in the repository. It will visualize training metrics and optimization history.
+Once training has started, you can monitor progress by opening the provided Jupyter notebook in the repository. It will visualize training metrics and optimization history once trained model results become available.
 
 - Notebook: study_visualization.ipynb

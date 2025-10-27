@@ -1,13 +1,22 @@
+# With augmentation
+#python cifar10_resnet18_runner.py --gpu 0 --n_trials 10 --study_name "cifar10_resnet" --augment True
+
+# Without augmentation
+#python cifar10_resnet18_runner.py --gpu 1 --n_trials 10 --study_name "cifar10_resnet" --augment False
+
+# Run parallel over 8 GPUs
+# parallel --ungroup python cifar10_resnet18_runner.py --gpu {} --n_trials 10 --study_name "cifar10_resnet" --augment False ::: {0..7}
+
 import argparse
 import os
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 import torchvision.transforms as transforms
 import optuna
 from optuna.storages import JournalStorage
 from optuna.storages.journal import JournalFileBackend
-from optuna.integration.botorch import BoTorchSampler
 
 # ----------------------------
 # Parse command-line arguments
@@ -90,13 +99,13 @@ def evaluate(model, val_loader, device):
 # Objective function
 # ----------------------------
 def objective(trial):
+    # Hyperparameters
     lr = trial.suggest_float("lr", 1e-4, 1e-1, log=True)
     momentum = trial.suggest_float("momentum", 0.8, 0.99)
-    #weight_decay = trial.suggest_float("weight_decay", 1e-5, 1e-2, log=True)
-    weight_decay = trial.suggest_float("weight_decay", 1e-5, 1e-1, log=True)
+    weight_decay = trial.suggest_float("weight_decay", 1e-5, 1e-2, log=True)
+    batch_size = trial.suggest_categorical("batch_size", [32, 64, 128, 256])
     T_max = trial.suggest_int("T_max", 20, 50)
 
-    batch_size = 32
     train_loader, val_loader = get_dataloaders(batch_size, args.augment)
 
     model = torchvision.models.resnet18(num_classes=10).to(DEVICE)
@@ -109,8 +118,8 @@ def objective(trial):
         scheduler.step()
         val_accuracy = evaluate(model, val_loader, DEVICE)
         trial.report(val_accuracy, epoch)
-        #if trial.should_prune():
-        #    raise optuna.exceptions.TrialPruned()
+        if trial.should_prune():
+            raise optuna.exceptions.TrialPruned()
 
     return val_accuracy
 
@@ -119,14 +128,11 @@ def objective(trial):
 # ----------------------------
 def run_optimization():
     storage = JournalStorage(JournalFileBackend(file_path="./journal.log"))
-    sampler = BoTorchSampler()
     study = optuna.create_study(
         study_name=args.study_name,
         storage=storage,
         load_if_exists=True,
-        direction="maximize",
-        sampler=sampler,
-        pruner=optuna.pruners.NopPruner()  # disables pruning
+        direction="maximize"
     )
     study.optimize(objective, n_trials=args.n_trials)
     print(f"Study '{args.study_name}' completed. Best value: {study.best_value}, params: {study.best_params}")
